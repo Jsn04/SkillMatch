@@ -62,14 +62,30 @@ docker compose exec db psql -U talentmatch -d talentmatch -c "SELECT COUNT(*) FR
 4. Click "Find engineers".
 5. You get the best matching engineers, each with a match percentage (higher means a better fit).
 
-## The data
+## The data (why it is generated)
 
-There is no public dataset of engineers rated on these six things (real staffing data is
-confidential), so I generate a realistic synthetic bench of 2000 engineers. This is done in a
-notebook (data/data_generation.ipynb) using pandas, numpy and the Faker library for the names. I
-add a couple of sensible correlations, for example senior engineers tend to have more years of
-experience and to be a bit more client-facing. The data is generated, not real, and that is
-declared here.
+The data in this project is generated, not real, and I want to be upfront about why. A company's
+engineering bench (who works there, their seniority, availability, how client-facing they are) is
+private internal HR data. Companies do not publish it, so there is no public dataset of engineers
+rated on these six things anywhere online. Because the brief allows a generated database as long
+as the source is declared, I generate a realistic synthetic bench of 2000 engineers instead.
+
+The generation is in a notebook (data/data_generation.ipynb) using pandas, numpy and the Faker
+library for the names. I do not pick every number at random, I shape the data so it behaves like
+real engineers, using these correlations:
+
+- more senior engineers have more years of experience
+- more years of experience usually means deeper domain knowledge
+- senior engineers tend to be more client-facing
+- timezone overlap depends on the region (measured against a US head office: Americas high,
+  EMEA medium, APAC low)
+- some roles work on more modern stacks than others (ML, data and devops engineers skew newer)
+- only senior people are labelled as architects
+- very senior people are often spread across projects, so they have a bit less free bandwidth
+
+This makes the matches sensible and explainable. For example, a project that needs high timezone
+overlap and a modern stack tends to return engineers based in the Americas working in ML or data
+roles, which is exactly what you would expect.
 
 ## How I built the matching
 
