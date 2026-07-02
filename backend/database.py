@@ -12,8 +12,8 @@ import psycopg2
 # I use the service name "db" as the host because inside the docker network the
 # database container is reachable by its service name, not by "localhost".
 DB_HOST = os.environ.get("DB_HOST", "db")
-DB_NAME = os.environ.get("POSTGRES_DB", "talentmatch")
-DB_USER = os.environ.get("POSTGRES_USER", "talentmatch")
+DB_NAME = os.environ.get("POSTGRES_DB", "skillmatch")
+DB_USER = os.environ.get("POSTGRES_USER", "skillmatch")
 DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "localdev")
 
 

@@ -9,13 +9,13 @@ services:
     # after ":-" is used as a default so the project still runs out of the box.
     # these are only local development values, not real secrets.
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-talentmatch}
+      POSTGRES_USER: ${POSTGRES_USER:-skillmatch}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-localdev}
-      POSTGRES_DB: ${POSTGRES_DB:-talentmatch}
+      POSTGRES_DB: ${POSTGRES_DB:-skillmatch}
     ports:
       - "5432:5432"
     networks:
-      - talentmatch-net
+      - skillmatch-net
 
   backend:
     build: ./backend
@@ -24,16 +24,16 @@ services:
     # the backend needs the same database settings so it can connect to the db container
     environment:
       DB_HOST: db
-      POSTGRES_USER: ${POSTGRES_USER:-talentmatch}
+      POSTGRES_USER: ${POSTGRES_USER:-skillmatch}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-localdev}
-      POSTGRES_DB: ${POSTGRES_DB:-talentmatch}
+      POSTGRES_DB: ${POSTGRES_DB:-skillmatch}
     # share the data folder into the container so the backend can read engineers.csv
     volumes:
       - ./data:/app/data
     depends_on:
       - db
     networks:
-      - talentmatch-net
+      - skillmatch-net
 
   frontend:
     build: ./frontend
@@ -42,9 +42,9 @@ services:
     depends_on:
       - backend
     networks:
-      - talentmatch-net
+      - skillmatch-net
 
 # my own network instead of the default one (the brief asks for a custom network)
 networks:
-  talentmatch-net:
+  skillmatch-net:
     driver: bridge

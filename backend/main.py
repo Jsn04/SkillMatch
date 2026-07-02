@@ -1,5 +1,5 @@
 """
-TalentMatch backend.
+SkillMatch backend.
 
 This is the API for the project. When it starts it loads the engineer data into the
 database, and it gives the frontend a few endpoints: a health check, a list of engineers,

@@ -77,7 +77,7 @@ function App() {
   return (
     <div className="page">
       <div className="header">
-        <h1>TalentMatch</h1>
+        <h1>SkillMatch</h1>
         <p className="subtitle">Describe the project and get the engineers who fit best.</p>
       </div>
 

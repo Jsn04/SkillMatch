@@ -1,6 +1,6 @@
-# TalentMatch
+# SkillMatch
 
-TalentMatch is a web app that helps staff engineers onto projects. You pick the team you need
+SkillMatch is a web app that helps staff engineers onto projects. You pick the team you need
 (the discipline) and set the levels a project needs (seniority, domain familiarity, client
 communication, timezone overlap, bandwidth), and it shows the engineers who fit best, each with a
 match percentage.
@@ -53,7 +53,7 @@ nothing else to set up.
 If you want to check the data is in the database:
 
 ```
-docker compose exec db psql -U talentmatch -d talentmatch -c "SELECT COUNT(*) FROM engineers;"
+docker compose exec db psql -U skillmatch -d skillmatch -c "SELECT COUNT(*) FROM engineers;"
 ```
 
 ## How to use it
@@ -108,7 +108,7 @@ backend uses.
 ## Project structure
 
 ```
-TalentMatch/
+SkillMatch/
   docker-compose.yml        starts the three containers on a custom network
   backend/
     main.py                 the API (health, engineers, meta, recommend)
