@@ -48,9 +48,7 @@ body {
   margin-bottom: 5px;
 }
 
-.attribute select,
-.filters select,
-.filters input {
+.attribute select {
   width: 100%;
   padding: 8px;
   font-size: 14px;
@@ -58,21 +56,6 @@ body {
   border-radius: 6px;
   background: #fff;
   box-sizing: border-box;
-}
-
-.filters {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 18px;
-}
-
-.filters label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 5px;
 }
 
 .controls {

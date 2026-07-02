@@ -129,8 +129,6 @@ class MatchRequest(BaseModel):
     # optional filters
     discipline: str | None = None
     vertical: str | None = None
-    min_years: int | None = None
-    max_years: int | None = None
 
 
 @app.post("/recommend")
@@ -149,6 +147,4 @@ def recommend_engineers(request: MatchRequest):
         top_n=request.top_n,
         discipline=request.discipline,
         vertical=request.vertical,
-        min_years=request.min_years,
-        max_years=request.max_years,
     )

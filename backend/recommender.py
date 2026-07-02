@@ -3,8 +3,10 @@ The matching logic for the backend.
 
 This is the same idea as my similarity notebook, but instead of reading a csv it loads
 the engineers from the database. It uses scikit-learn's k-NN to find the engineers who
-best match the levels a project needs. It can also filter the engineers by discipline,
-vertical and years of experience before matching.
+best match the levels a project needs. It can also filter the engineers by discipline
+and vertical before matching. I do not filter by years of experience separately, since
+the Experience Level dropdown already implies a years range, and letting both be set at
+once could contradict each other (for example picking "Junior" but also 15+ years).
 
 It also takes current availability into account. An engineer who is already fully booked
 on another project is not a real option if I need to fill a seat right now (an exact fit
@@ -22,8 +24,7 @@ from database import get_connection
 ATTRIBUTES = ["seniority", "domain", "communication", "timezone", "bandwidth"]
 
 
-def load_engineers(discipline=None, vertical=None, min_years=None, max_years=None,
-                    exclude_fully_booked=False):
+def load_engineers(discipline=None, vertical=None, exclude_fully_booked=False):
     """Read engineers from the database, with optional filters."""
     conn = get_connection()
     cur = conn.cursor()
@@ -43,12 +44,6 @@ def load_engineers(discipline=None, vertical=None, min_years=None, max_years=Non
     if vertical:
         conditions.append("vertical = %s")
         params.append(vertical)
-    if min_years is not None:
-        conditions.append("years_experience >= %s")
-        params.append(min_years)
-    if max_years is not None:
-        conditions.append("years_experience <= %s")
-        params.append(max_years)
     if exclude_fully_booked:
         conditions.append("availability_status != %s")
         params.append("Fully booked")
@@ -64,7 +59,7 @@ def load_engineers(discipline=None, vertical=None, min_years=None, max_years=Non
 
 
 def recommend(project, method="euclidean", weights=None, top_n=10,
-              discipline=None, vertical=None, min_years=None, max_years=None):
+              discipline=None, vertical=None):
     """Return the engineers who best match what the project needs (after any filters)."""
     if weights is None:
         weights = {a: 1 for a in ATTRIBUTES}
@@ -74,7 +69,7 @@ def recommend(project, method="euclidean", weights=None, top_n=10,
     # potential fit = scouting ahead, so busy engineers are still worth showing.
     exclude_fully_booked = (method == "euclidean")
 
-    rows = load_engineers(discipline, vertical, min_years, max_years, exclude_fully_booked)
+    rows = load_engineers(discipline, vertical, exclude_fully_booked)
 
     # if the filters left no engineers there is nothing to match
     if len(rows) == 0:

@@ -11,15 +11,6 @@ const VERTICALS = [
   "Media", "Logistics", "EdTech", "Telecom", "Government", "Other",
 ];
 
-// experience is optional, so this starts on "Any" (no filter at all)
-const EXPERIENCE_RANGES = [
-  { value: "", label: "Any experience", min: null, max: null },
-  { value: "0-3", label: "0 - 3 years (entry)", min: 0, max: 3 },
-  { value: "3-7", label: "3 - 7 years (mid)", min: 3, max: 7 },
-  { value: "7-15", label: "7 - 15 years (senior)", min: 7, max: 15 },
-  { value: "15+", label: "15+ years (veteran)", min: 15, max: null },
-];
-
 // turns an engineer's availability into a small badge (text + colour class)
 function statusBadge(engineer) {
   if (engineer.availability_status === "Available") {
@@ -37,7 +28,6 @@ function App() {
   const [method, setMethod] = useState("euclidean");
   const [discipline, setDiscipline] = useState("");
   const [vertical, setVertical] = useState("");
-  const [experience, setExperience] = useState("");
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,13 +50,10 @@ function App() {
 
   async function handleSubmit() {
     setLoading(true);
-    // experience is optional, so only send a range if the user actually picked one
-    const range = EXPERIENCE_RANGES.find((r) => r.value === experience);
+    // years of experience is not a separate filter, since seniority already implies it
     const filters = {
       discipline: discipline,
       vertical: vertical,
-      min_years: range.min,
-      max_years: range.max,
     };
     const matches = await getRecommendations(values, method, filters);
     setResults(matches);
@@ -111,29 +98,18 @@ function App() {
           ))}
         </div>
 
-        {/* filters, both optional */}
-        <div className="filters">
-          <div>
-            <label>Industry</label>
-            <select value={vertical} onChange={(e) => setVertical(e.target.value)}>
-              <option value="">Any industry</option>
-              {VERTICALS.map((v) => (
-                <option key={v} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label>Experience</label>
-            <select value={experience} onChange={(e) => setExperience(e.target.value)}>
-              {EXPERIENCE_RANGES.map((r) => (
-                <option key={r.value} value={r.value}>
-                  {r.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        {/* the industry filter, optional. years of experience is not a separate filter
+            here, since the Experience Level dropdown above already implies it */}
+        <div className="attribute full">
+          <label>Industry</label>
+          <select value={vertical} onChange={(e) => setVertical(e.target.value)}>
+            <option value="">Any industry</option>
+            {VERTICALS.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* match type + search */}
@@ -155,7 +131,7 @@ function App() {
       {loading && <p>Finding engineers...</p>}
 
       {searched && !loading && results.length === 0 && (
-        <p>No engineers found for these filters. Try widening the tech stack, industry or experience filter.</p>
+        <p>No engineers found for these filters. Try widening the tech stack or industry.</p>
       )}
 
       {searched && !loading && results.length > 0 && results.length < 3 && (
