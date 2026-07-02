@@ -91,11 +91,11 @@ ATTRIBUTE_META = [
         {"label": "Experienced", "value": 70},
         {"label": "Deep specialist", "value": 95},
     ]},
-    {"key": "communication", "label": "Communication", "options": [
-        {"label": "Heads-down", "value": 15},
-        {"label": "Occasional", "value": 45},
-        {"label": "Client-facing", "value": 70},
-        {"label": "Executive-facing", "value": 95},
+    {"key": "communication", "label": "Communication Skill", "options": [
+        {"label": "Basic", "value": 15},
+        {"label": "Good", "value": 45},
+        {"label": "Strong", "value": 70},
+        {"label": "Excellent", "value": 95},
     ]},
     {"key": "timezone", "label": "Timezone", "options": [
         {"label": "Flexible", "value": 15},
