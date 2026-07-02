@@ -22,19 +22,16 @@ function App() {
       setAttributes(meta.attributes);
       const start = {};
       meta.attributes.forEach((attr) => {
-        // start each dropdown on its second option
-        start[attr.key] = attr.options[1].value;
+        start[attr.key] = attr.options[1].value; // start on the second option
       });
       setValues(start);
     });
   }, []);
 
-  // update one dropdown's value
   function handleChange(key, newValue) {
     setValues({ ...values, [key]: Number(newValue) });
   }
 
-  // send the project needs and filters to the backend and show the matches
   async function handleSubmit() {
     setLoading(true);
     const filters = { vertical: vertical, min_years: minYears, max_years: maxYears };
@@ -48,28 +45,30 @@ function App() {
     <div className="page">
       <div className="header">
         <h1>TalentMatch</h1>
-        <p className="subtitle">Set what the project needs and find the engineers who fit best.</p>
+        <p className="subtitle">Describe the project and get the engineers who fit best.</p>
       </div>
 
-      {/* the form is inside a card */}
-      <div className="card form-card">
-        {attributes.map((attr) => (
-          <div className="attribute" key={attr.key}>
-            <label>{attr.label}</label>
-            <select value={values[attr.key]} onChange={(e) => handleChange(attr.key, e.target.value)}>
-              {attr.options.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        ))}
+      <div className="card">
+        {/* the six project needs, as dropdowns in a grid */}
+        <div className="grid">
+          {attributes.map((attr) => (
+            <div className="attribute" key={attr.key}>
+              <label>{attr.label}</label>
+              <select value={values[attr.key]} onChange={(e) => handleChange(attr.key, e.target.value)}>
+                {attr.options.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
 
         {/* filters */}
         <div className="filters">
-          <label>
-            Vertical:
+          <div>
+            <label>Vertical</label>
             <select value={vertical} onChange={(e) => setVertical(e.target.value)}>
               <option value="">Any</option>
               {VERTICALS.map((v) => (
@@ -78,20 +77,20 @@ function App() {
                 </option>
               ))}
             </select>
-          </label>
-          <label>
-            Min years:
+          </div>
+          <div>
+            <label>Min years</label>
             <input type="number" value={minYears} onChange={(e) => setMinYears(Number(e.target.value))} />
-          </label>
-          <label>
-            Max years:
+          </div>
+          <div>
+            <label>Max years</label>
             <input type="number" value={maxYears} onChange={(e) => setMaxYears(Number(e.target.value))} />
-          </label>
+          </div>
         </div>
 
-        {/* choose how to match, and search */}
+        {/* match type + search */}
         <div className="controls">
-          <label>Match by:</label>
+          <label>Match by</label>
           <select value={method} onChange={(e) => setMethod(e.target.value)}>
             <option value="euclidean">Exact fit</option>
             <option value="cosine">Potential fit</option>
@@ -102,7 +101,6 @@ function App() {
 
       {loading && <p>Finding engineers...</p>}
 
-      {/* message when the filters return nothing */}
       {searched && !loading && results.length === 0 && (
         <p>No engineers found for these filters.</p>
       )}
@@ -111,24 +109,15 @@ function App() {
         <div className="results">
           <h2>Best matches</h2>
           {results.map((engineer, index) => (
-            <div className="player-card" key={index}>
+            <div className="result-row" key={index}>
               <div className="rank">{index + 1}</div>
-              <div className="player-main">
+              <div className="result-main">
                 <div className="name">{engineer.name}</div>
                 <div className="info">
                   {engineer.role} · {engineer.region} · {engineer.vertical} · {engineer.years_experience}y exp
                 </div>
-                <div className="stats">
-                  SEN {engineer.seniority} · DOM {engineer.domain} · COM {engineer.communication} · TZ{" "}
-                  {engineer.timezone} · STK {engineer.stack} · BW {engineer.bandwidth}
-                </div>
               </div>
-              <div className="match">
-                <div className="percent">{engineer.match_percent}%</div>
-                <div className="bar">
-                  <div className="bar-fill" style={{ width: `${engineer.match_percent}%` }}></div>
-                </div>
-              </div>
+              <div className="match-pill">{engineer.match_percent}%</div>
             </div>
           ))}
         </div>

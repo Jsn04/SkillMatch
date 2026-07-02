@@ -20,7 +20,7 @@ export async function getRecommendations(values, method, filters) {
   const res = await fetch(`${API_URL}/recommend`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...values, method: method, top_n: 10, ...filters }),
+    body: JSON.stringify({ ...values, method: method, top_n: 5, ...filters }),
   });
   return res.json();
 }
