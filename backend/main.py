@@ -13,7 +13,7 @@ from pydantic import BaseModel
 
 from seed_data import seed
 from database import get_connection
-from recommender import recommend, ATTRIBUTES
+from recommender import recommend
 
 app = FastAPI()
 
@@ -74,14 +74,52 @@ def get_engineers(limit: int = 20):
     return engineers
 
 
+# each attribute is picked from a few labelled levels. the label is what the user sees,
+# the value is the number the matching uses behind the scenes.
+ATTRIBUTE_META = [
+    {"key": "seniority", "label": "Seniority", "options": [
+        {"label": "Junior", "value": 15},
+        {"label": "Mid-level", "value": 45},
+        {"label": "Senior", "value": 70},
+        {"label": "Principal / Architect", "value": 95},
+    ]},
+    {"key": "domain", "label": "Domain familiarity", "options": [
+        {"label": "Generalist", "value": 15},
+        {"label": "Some exposure", "value": 45},
+        {"label": "Experienced", "value": 70},
+        {"label": "Deep specialist", "value": 95},
+    ]},
+    {"key": "communication", "label": "Client communication", "options": [
+        {"label": "Heads-down", "value": 15},
+        {"label": "Occasional", "value": 45},
+        {"label": "Client-facing", "value": 70},
+        {"label": "Executive-facing", "value": 95},
+    ]},
+    {"key": "timezone", "label": "Timezone overlap", "options": [
+        {"label": "Async", "value": 15},
+        {"label": "Partial overlap", "value": 45},
+        {"label": "Mostly overlap", "value": 70},
+        {"label": "Full sync", "value": 95},
+    ]},
+    {"key": "stack", "label": "Stack modernity", "options": [
+        {"label": "Legacy", "value": 15},
+        {"label": "Mixed", "value": 45},
+        {"label": "Modern", "value": 70},
+        {"label": "Greenfield / AI", "value": 95},
+    ]},
+    {"key": "bandwidth", "label": "Bandwidth", "options": [
+        {"label": "Advisory (light)", "value": 15},
+        {"label": "Part-time", "value": 45},
+        {"label": "Most of the week", "value": 70},
+        {"label": "Full-time", "value": 95},
+    ]},
+]
+
+
 @app.get("/meta")
 def get_meta():
-    """Return the attributes and their value range. The form uses this to build itself."""
-    return {
-        "attributes": ATTRIBUTES,
-        "min_value": 0,
-        "max_value": 99,
-    }
+    """Return the attributes and their options. The form builds its dropdowns from this."""
+    return {"attributes": ATTRIBUTE_META}
 
 
 # the shape of the data the frontend sends when asking for matches

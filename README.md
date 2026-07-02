@@ -55,7 +55,8 @@ docker compose exec db psql -U talentmatch -d talentmatch -c "SELECT COUNT(*) FR
 
 ## How to use it
 
-1. Move the six sliders to the levels the project needs.
+1. Pick the level the project needs for each of the six things (for example seniority: Junior,
+   Mid-level, Senior, or Principal / Architect).
 2. Optionally filter by vertical and years of experience.
 3. Choose "Exact fit" or "Potential fit".
 4. Click "Find engineers".

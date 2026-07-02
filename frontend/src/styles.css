@@ -38,21 +38,17 @@ body {
 }
 
 .attribute label {
-  display: flex;
-  justify-content: space-between;
+  display: block;
   margin-bottom: 4px;
-  text-transform: capitalize;
   font-size: 14px;
 }
 
-.attribute .value {
-  color: #1f6f3f;
-  font-weight: bold;
-}
-
-.attribute input[type="range"] {
+.attribute select {
   width: 100%;
-  accent-color: #1f6f3f;
+  padding: 7px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
 .filters {

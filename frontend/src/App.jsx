@@ -16,21 +16,22 @@ function App() {
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // when the page loads, get the attributes from the backend and start each one at 50
+  // when the page loads, get the attributes and their options from the backend
   useEffect(() => {
     getMeta().then((meta) => {
       setAttributes(meta.attributes);
       const start = {};
-      meta.attributes.forEach((a) => {
-        start[a] = 50;
+      meta.attributes.forEach((attr) => {
+        // start each dropdown on its second option
+        start[attr.key] = attr.options[1].value;
       });
       setValues(start);
     });
   }, []);
 
-  // update one slider's value
-  function handleChange(attribute, newValue) {
-    setValues({ ...values, [attribute]: Number(newValue) });
+  // update one dropdown's value
+  function handleChange(key, newValue) {
+    setValues({ ...values, [key]: Number(newValue) });
   }
 
   // send the project needs and filters to the backend and show the matches
@@ -52,19 +53,16 @@ function App() {
 
       {/* the form is inside a card */}
       <div className="card form-card">
-        {attributes.map((attribute) => (
-          <div className="attribute" key={attribute}>
-            <label>
-              <span>{attribute}</span>
-              <span className="value">{values[attribute]}</span>
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="99"
-              value={values[attribute] || 0}
-              onChange={(e) => handleChange(attribute, e.target.value)}
-            />
+        {attributes.map((attr) => (
+          <div className="attribute" key={attr.key}>
+            <label>{attr.label}</label>
+            <select value={values[attr.key]} onChange={(e) => handleChange(attr.key, e.target.value)}>
+              {attr.options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
           </div>
         ))}
 
