@@ -1,0 +1,23 @@
+# python
+__pycache__/
+*.pyc
+
+# node
+node_modules/
+dist/
+
+# python virtual environment
+.venv/
+
+# env / secrets
+.env
+
+# mac
+.DS_Store
+
+# my personal build notes (keep private for now)
+TalentMatch_Build_Log.md
+
+# research write-up (kept local, not part of the app submission)
+SUMMARY.md
+talentmatch_method_design.pdf

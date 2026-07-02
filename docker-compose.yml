@@ -1,0 +1,50 @@
+# This file starts all three parts of the project together with one command:
+#   docker compose up
+# It also puts them on my own custom network so they can find each other.
+
+services:
+  db:
+    image: postgres:15
+    # the values come from a .env file. if there is no .env file, the part
+    # after ":-" is used as a default so the project still runs out of the box.
+    # these are only local development values, not real secrets.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-talentmatch}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-localdev}
+      POSTGRES_DB: ${POSTGRES_DB:-talentmatch}
+    ports:
+      - "5432:5432"
+    networks:
+      - talentmatch-net
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    # the backend needs the same database settings so it can connect to the db container
+    environment:
+      DB_HOST: db
+      POSTGRES_USER: ${POSTGRES_USER:-talentmatch}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-localdev}
+      POSTGRES_DB: ${POSTGRES_DB:-talentmatch}
+    # share the data folder into the container so the backend can read engineers.csv
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - db
+    networks:
+      - talentmatch-net
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - talentmatch-net
+
+# my own network instead of the default one (the brief asks for a custom network)
+networks:
+  talentmatch-net:
+    driver: bridge
