@@ -17,14 +17,13 @@ CSV_PATH = "/app/data/engineers.csv"
 
 # the columns we load, in the same order as the csv
 COLUMNS = [
-    "name", "role", "region", "vertical", "years_experience",
-    "seniority", "domain", "communication", "timezone", "stack", "bandwidth",
+    "name", "discipline", "region", "vertical", "years_experience",
+    "seniority", "domain", "communication", "timezone", "bandwidth",
 ]
 
 # these columns are numbers, the rest are text
 NUMERIC_COLUMNS = {
-    "years_experience", "seniority", "domain", "communication",
-    "timezone", "stack", "bandwidth",
+    "years_experience", "seniority", "domain", "communication", "timezone", "bandwidth",
 }
 
 
@@ -50,7 +49,7 @@ def create_table(conn):
         CREATE TABLE IF NOT EXISTS engineers (
             id SERIAL PRIMARY KEY,
             name TEXT,
-            role TEXT,
+            discipline TEXT,
             region TEXT,
             vertical TEXT,
             years_experience INTEGER,
@@ -58,7 +57,6 @@ def create_table(conn):
             domain INTEGER,
             communication INTEGER,
             timezone INTEGER,
-            stack INTEGER,
             bandwidth INTEGER
         )
         """
@@ -95,8 +93,8 @@ def load_engineers(conn):
     execute_values(
         cur,
         "INSERT INTO engineers "
-        "(name, role, region, vertical, years_experience, "
-        "seniority, domain, communication, timezone, stack, bandwidth) VALUES %s",
+        "(name, discipline, region, vertical, years_experience, "
+        "seniority, domain, communication, timezone, bandwidth) VALUES %s",
         rows,
     )
     conn.commit()

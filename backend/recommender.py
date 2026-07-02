@@ -3,8 +3,8 @@ The matching logic for the backend.
 
 This is the same idea as my similarity notebook, but instead of reading a csv it loads
 the engineers from the database. It uses scikit-learn's k-NN to find the engineers who
-best match the levels a project needs. It can also filter the engineers by vertical and
-years of experience before matching.
+best match the levels a project needs. It can also filter the engineers by discipline,
+vertical and years of experience before matching.
 """
 
 import numpy as np
@@ -12,23 +12,26 @@ from sklearn.neighbors import NearestNeighbors
 
 from database import get_connection
 
-# the six things I match on (same order everywhere)
-ATTRIBUTES = ["seniority", "domain", "communication", "timezone", "stack", "bandwidth"]
+# the five levels I match on (same order everywhere)
+ATTRIBUTES = ["seniority", "domain", "communication", "timezone", "bandwidth"]
 
 
-def load_engineers(vertical=None, min_years=None, max_years=None):
-    """Read engineers from the database, with optional filters for vertical and years."""
+def load_engineers(discipline=None, vertical=None, min_years=None, max_years=None):
+    """Read engineers from the database, with optional filters."""
     conn = get_connection()
     cur = conn.cursor()
 
     query = (
-        "SELECT name, role, region, vertical, years_experience, "
-        "seniority, domain, communication, timezone, stack, bandwidth FROM engineers"
+        "SELECT name, discipline, region, vertical, years_experience, "
+        "seniority, domain, communication, timezone, bandwidth FROM engineers"
     )
 
     # only add the filters that were actually given
     conditions = []
     params = []
+    if discipline:
+        conditions.append("discipline = %s")
+        params.append(discipline)
     if vertical:
         conditions.append("vertical = %s")
         params.append(vertical)
@@ -50,13 +53,13 @@ def load_engineers(vertical=None, min_years=None, max_years=None):
 
 
 def recommend(project, method="euclidean", weights=None, top_n=10,
-              vertical=None, min_years=None, max_years=None):
+              discipline=None, vertical=None, min_years=None, max_years=None):
     """Return the engineers who best match what the project needs (after any filters)."""
     if weights is None:
         weights = {a: 1 for a in ATTRIBUTES}
     weight_vector = np.array([weights[a] for a in ATTRIBUTES])
 
-    rows = load_engineers(vertical, min_years, max_years)
+    rows = load_engineers(discipline, vertical, min_years, max_years)
 
     # if the filters left no engineers there is nothing to match
     if len(rows) == 0:
@@ -65,8 +68,8 @@ def recommend(project, method="euclidean", weights=None, top_n=10,
     # cannot ask for more neighbours than the number of engineers we have
     n = min(top_n, len(rows))
 
-    # the six values are the last six columns of each row
-    attribute_matrix = np.array([row[-6:] for row in rows], dtype=float) * weight_vector
+    # the five levels are the last five columns of each row
+    attribute_matrix = np.array([row[-5:] for row in rows], dtype=float) * weight_vector
     project_point = np.array([project[a] for a in ATTRIBUTES], dtype=float) * weight_vector
 
     knn = NearestNeighbors(n_neighbors=n, metric=method)
@@ -86,7 +89,7 @@ def recommend(project, method="euclidean", weights=None, top_n=10,
         row = rows[row_index]
         matches.append({
             "name": row[0],
-            "role": row[1],
+            "discipline": row[1],
             "region": row[2],
             "vertical": row[3],
             "years_experience": row[4],
@@ -94,8 +97,7 @@ def recommend(project, method="euclidean", weights=None, top_n=10,
             "domain": row[6],
             "communication": row[7],
             "timezone": row[8],
-            "stack": row[9],
-            "bandwidth": row[10],
+            "bandwidth": row[9],
             "match_percent": round(float(scores[place]), 1),
         })
     return matches

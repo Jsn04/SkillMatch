@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import { getMeta, getRecommendations } from "./api";
 import "./styles.css";
 
-// the verticals I let the user filter by
-const VERTICALS = ["FinTech", "Healthcare", "E-commerce", "SaaS", "Gaming"];
+// the teams the user can ask for
+const DISCIPLINES = ["Frontend", "Backend", "Data / Database", "DevOps", "Cloud", "Networking", "AI / ML", "Other"];
+
+// the industries the user can filter by
+const VERTICALS = [
+  "FinTech", "Healthcare", "E-commerce", "SaaS", "Gaming",
+  "Media", "Logistics", "EdTech", "Telecom", "Government", "Other",
+];
 
 function App() {
   const [attributes, setAttributes] = useState([]);
   const [values, setValues] = useState({});
   const [method, setMethod] = useState("euclidean");
+  const [discipline, setDiscipline] = useState("");
   const [vertical, setVertical] = useState("");
   const [minYears, setMinYears] = useState(0);
   const [maxYears, setMaxYears] = useState(30);
@@ -34,7 +41,12 @@ function App() {
 
   async function handleSubmit() {
     setLoading(true);
-    const filters = { vertical: vertical, min_years: minYears, max_years: maxYears };
+    const filters = {
+      discipline: discipline,
+      vertical: vertical,
+      min_years: minYears,
+      max_years: maxYears,
+    };
     const matches = await getRecommendations(values, method, filters);
     setResults(matches);
     setSearched(true);
@@ -49,7 +61,20 @@ function App() {
       </div>
 
       <div className="card">
-        {/* the six project needs, as dropdowns in a grid */}
+        {/* the team is the first thing to pick */}
+        <div className="attribute full">
+          <label>Discipline (team needed)</label>
+          <select value={discipline} onChange={(e) => setDiscipline(e.target.value)}>
+            <option value="">Any team</option>
+            {DISCIPLINES.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* the levels the project needs, as dropdowns in a grid */}
         <div className="grid">
           {attributes.map((attr) => (
             <div className="attribute" key={attr.key}>
@@ -79,11 +104,11 @@ function App() {
             </select>
           </div>
           <div>
-            <label>Min years</label>
+            <label>Min years of experience</label>
             <input type="number" value={minYears} onChange={(e) => setMinYears(Number(e.target.value))} />
           </div>
           <div>
-            <label>Max years</label>
+            <label>Max years of experience</label>
             <input type="number" value={maxYears} onChange={(e) => setMaxYears(Number(e.target.value))} />
           </div>
         </div>
@@ -114,7 +139,7 @@ function App() {
               <div className="result-main">
                 <div className="name">{engineer.name}</div>
                 <div className="info">
-                  {engineer.role} · {engineer.region} · {engineer.vertical} · {engineer.years_experience}y exp
+                  {engineer.discipline} · {engineer.region} · {engineer.vertical} · {engineer.years_experience}y exp
                 </div>
               </div>
               <div className="match-pill">{engineer.match_percent}%</div>

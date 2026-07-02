@@ -28,7 +28,12 @@ body {
   box-shadow: 0 2px 10px rgba(30, 40, 90, 0.06);
 }
 
-/* the six project dropdowns sit in a two column grid */
+/* the discipline dropdown spans the full width, above the grid */
+.attribute.full {
+  margin-bottom: 16px;
+}
+
+/* the project level dropdowns sit in a two column grid */
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

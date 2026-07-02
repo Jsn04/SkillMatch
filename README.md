@@ -1,8 +1,9 @@
 # TalentMatch
 
-TalentMatch is a web app that helps staff engineers onto projects. You set the levels a project
-needs (seniority, domain, communication, timezone, stack, bandwidth), pick how you want to match,
-and it shows the engineers who fit best, each with a match percentage.
+TalentMatch is a web app that helps staff engineers onto projects. You pick the team you need
+(the discipline) and set the levels a project needs (seniority, domain familiarity, client
+communication, timezone overlap, bandwidth), and it shows the engineers who fit best, each with a
+match percentage.
 
 ## Why I made this
 
@@ -27,8 +28,10 @@ The frontend never talks to the database directly. It calls the backend API, and
 reads from the database. The three containers are connected over a custom Docker network.
 
 For the matching I use k-nearest-neighbours from scikit-learn. Each engineer is a point made of
-their six values. When you send the project's needs, the backend finds the engineers nearest to
-that. "Nearest" is measured in one of two ways:
+their five levels (seniority, domain, communication, timezone, bandwidth). When you send the
+project's needs, the backend first filters the bench (by discipline, vertical and years of
+experience) and then finds the engineers nearest to what the project asked for. "Nearest" is
+measured in one of two ways:
 - Euclidean distance, which is the exact fit (their levels are close to what the project asked for)
 - Cosine, which is the potential fit (their balance of skills points the same way, even if the levels are lower)
 
@@ -55,20 +58,21 @@ docker compose exec db psql -U talentmatch -d talentmatch -c "SELECT COUNT(*) FR
 
 ## How to use it
 
-1. Pick the level the project needs for each of the six things (for example seniority: Junior,
+1. Pick the team you need (discipline), for example Backend or AI / ML.
+2. Pick the level the project needs for each of the five things (for example seniority: Junior,
    Mid-level, Senior, or Principal / Architect).
-2. Optionally filter by vertical and years of experience.
-3. Choose "Exact fit" or "Potential fit".
-4. Click "Find engineers".
-5. You get the best matching engineers, each with a match percentage (higher means a better fit).
+3. Optionally filter by vertical and years of experience.
+4. Choose "Exact fit" or "Potential fit".
+5. Click "Find engineers".
+6. You get the best matching engineers, each with a match percentage (higher means a better fit).
 
 ## The data (why it is generated)
 
 The data in this project is generated, not real, and I want to be upfront about why. A company's
 engineering bench (who works there, their seniority, availability, how client-facing they are) is
 private internal HR data. Companies do not publish it, so there is no public dataset of engineers
-rated on these six things anywhere online. Because the brief allows a generated database as long
-as the source is declared, I generate a realistic synthetic bench of 2000 engineers instead.
+like this anywhere online. Because the brief allows a generated database as long as the source is
+declared, I generate a realistic synthetic bench of 3000 engineers instead.
 
 The generation is in a notebook (data/data_generation.ipynb) using pandas, numpy and the Faker
 library for the names. I do not pick every number at random, I shape the data so it behaves like
@@ -79,13 +83,11 @@ real engineers, using these correlations:
 - senior engineers tend to be more client-facing
 - timezone overlap depends on the region (measured against a US head office: Americas high,
   EMEA medium, APAC low)
-- some roles work on more modern stacks than others (ML, data and devops engineers skew newer)
-- only senior people are labelled as architects
 - very senior people are often spread across projects, so they have a bit less free bandwidth
+- the team (discipline) is spread realistically, with backend and frontend the most common
 
-This makes the matches sensible and explainable. For example, a project that needs high timezone
-overlap and a modern stack tends to return engineers based in the Americas working in ML or data
-roles, which is exactly what you would expect.
+This makes the matches sensible and explainable. For example, a project that needs full timezone
+overlap tends to return engineers based in the Americas, which is exactly what you would expect.
 
 ## How I built the matching
 

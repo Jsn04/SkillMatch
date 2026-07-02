@@ -45,8 +45,8 @@ def get_engineers(limit: int = 20):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        "SELECT id, name, role, region, vertical, years_experience, "
-        "seniority, domain, communication, timezone, stack, bandwidth "
+        "SELECT id, name, discipline, region, vertical, years_experience, "
+        "seniority, domain, communication, timezone, bandwidth "
         "FROM engineers LIMIT %s",
         (limit,),
     )
@@ -60,7 +60,7 @@ def get_engineers(limit: int = 20):
         engineers.append({
             "id": row[0],
             "name": row[1],
-            "role": row[2],
+            "discipline": row[2],
             "region": row[3],
             "vertical": row[4],
             "years_experience": row[5],
@@ -68,13 +68,12 @@ def get_engineers(limit: int = 20):
             "domain": row[7],
             "communication": row[8],
             "timezone": row[9],
-            "stack": row[10],
-            "bandwidth": row[11],
+            "bandwidth": row[10],
         })
     return engineers
 
 
-# each attribute is picked from a few labelled levels. the label is what the user sees,
+# each level is picked from a few labelled options. the label is what the user sees,
 # the value is the number the matching uses behind the scenes.
 ATTRIBUTE_META = [
     {"key": "seniority", "label": "Seniority", "options": [
@@ -96,16 +95,9 @@ ATTRIBUTE_META = [
         {"label": "Executive-facing", "value": 95},
     ]},
     {"key": "timezone", "label": "Timezone overlap", "options": [
-        {"label": "Async", "value": 15},
-        {"label": "Partial overlap", "value": 45},
-        {"label": "Mostly overlap", "value": 70},
-        {"label": "Full sync", "value": 95},
-    ]},
-    {"key": "stack", "label": "Stack modernity", "options": [
-        {"label": "Legacy", "value": 15},
-        {"label": "Mixed", "value": 45},
-        {"label": "Modern", "value": 70},
-        {"label": "Greenfield / AI", "value": 95},
+        {"label": "Flexible", "value": 15},
+        {"label": "Some overlap", "value": 50},
+        {"label": "Full overlap", "value": 90},
     ]},
     {"key": "bandwidth", "label": "Bandwidth", "options": [
         {"label": "Advisory (light)", "value": 15},
@@ -128,11 +120,11 @@ class MatchRequest(BaseModel):
     domain: int
     communication: int
     timezone: int
-    stack: int
     bandwidth: int
     method: str = "euclidean"
     top_n: int = 10
     # optional filters
+    discipline: str | None = None
     vertical: str | None = None
     min_years: int | None = None
     max_years: int | None = None
@@ -146,13 +138,13 @@ def recommend_engineers(request: MatchRequest):
         "domain": request.domain,
         "communication": request.communication,
         "timezone": request.timezone,
-        "stack": request.stack,
         "bandwidth": request.bandwidth,
     }
     return recommend(
         project,
         method=request.method,
         top_n=request.top_n,
+        discipline=request.discipline,
         vertical=request.vertical,
         min_years=request.min_years,
         max_years=request.max_years,
