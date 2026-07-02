@@ -20,6 +20,17 @@ const EXPERIENCE_RANGES = [
   { value: "15+", label: "15+ years (veteran)", min: 15, max: null },
 ];
 
+// turns an engineer's availability into a small badge (text + colour class)
+function statusBadge(engineer) {
+  if (engineer.availability_status === "Available") {
+    return { text: "Available now", cls: "status-available" };
+  }
+  if (engineer.availability_status === "Partially committed") {
+    return { text: `Partially free · full in ${engineer.available_in_weeks}w`, cls: "status-partial" };
+  }
+  return { text: `Fully booked · free in ${engineer.available_in_weeks}w`, cls: "status-booked" };
+}
+
 function App() {
   const [attributes, setAttributes] = useState([]);
   const [values, setValues] = useState({});
@@ -134,6 +145,11 @@ function App() {
           </select>
           <button onClick={handleSubmit}>Find engineers</button>
         </div>
+        <p className="method-note">
+          {method === "euclidean"
+            ? "Exact fit only shows engineers who are not fully booked elsewhere."
+            : "Potential fit shows everyone, including busy engineers, so you can plan ahead."}
+        </p>
       </div>
 
       {loading && <p>Finding engineers...</p>}
@@ -149,18 +165,22 @@ function App() {
       {results.length > 0 && (
         <div className="results">
           <h2>Best matches</h2>
-          {results.map((engineer, index) => (
-            <div className="result-row" key={index}>
-              <div className="rank">{index + 1}</div>
-              <div className="result-main">
-                <div className="name">{engineer.name}</div>
-                <div className="info">
-                  {engineer.discipline} · {engineer.region} · {engineer.vertical} · {engineer.years_experience}y exp
+          {results.map((engineer, index) => {
+            const status = statusBadge(engineer);
+            return (
+              <div className="result-row" key={index}>
+                <div className="rank">{index + 1}</div>
+                <div className="result-main">
+                  <div className="name">{engineer.name}</div>
+                  <div className="info">
+                    {engineer.discipline} · {engineer.region} · {engineer.vertical} · {engineer.years_experience}y exp
+                  </div>
+                  <span className={`status-badge ${status.cls}`}>{status.text}</span>
                 </div>
+                <div className="match-pill">{engineer.match_percent}%</div>
               </div>
-              <div className="match-pill">{engineer.match_percent}%</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

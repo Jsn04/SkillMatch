@@ -5,6 +5,12 @@ This is the same idea as my similarity notebook, but instead of reading a csv it
 the engineers from the database. It uses scikit-learn's k-NN to find the engineers who
 best match the levels a project needs. It can also filter the engineers by discipline,
 vertical and years of experience before matching.
+
+It also takes current availability into account. An engineer who is already fully booked
+on another project is not a real option if I need to fill a seat right now (an exact fit
+search), so those are left out automatically. For a potential fit search I am scouting
+ahead rather than staffing today, so a busy engineer is still shown, just with their
+status so I know when they would actually be free.
 """
 
 import numpy as np
@@ -16,14 +22,16 @@ from database import get_connection
 ATTRIBUTES = ["seniority", "domain", "communication", "timezone", "bandwidth"]
 
 
-def load_engineers(discipline=None, vertical=None, min_years=None, max_years=None):
+def load_engineers(discipline=None, vertical=None, min_years=None, max_years=None,
+                    exclude_fully_booked=False):
     """Read engineers from the database, with optional filters."""
     conn = get_connection()
     cur = conn.cursor()
 
     query = (
         "SELECT name, discipline, region, vertical, years_experience, "
-        "seniority, domain, communication, timezone, bandwidth FROM engineers"
+        "seniority, domain, communication, timezone, bandwidth, "
+        "availability_status, available_in_weeks FROM engineers"
     )
 
     # only add the filters that were actually given
@@ -41,6 +49,9 @@ def load_engineers(discipline=None, vertical=None, min_years=None, max_years=Non
     if max_years is not None:
         conditions.append("years_experience <= %s")
         params.append(max_years)
+    if exclude_fully_booked:
+        conditions.append("availability_status != %s")
+        params.append("Fully booked")
 
     if conditions:
         query += " WHERE " + " AND ".join(conditions)
@@ -59,7 +70,11 @@ def recommend(project, method="euclidean", weights=None, top_n=10,
         weights = {a: 1 for a in ATTRIBUTES}
     weight_vector = np.array([weights[a] for a in ATTRIBUTES])
 
-    rows = load_engineers(discipline, vertical, min_years, max_years)
+    # exact fit = fill the seat now, so a fully booked engineer is not a real option.
+    # potential fit = scouting ahead, so busy engineers are still worth showing.
+    exclude_fully_booked = (method == "euclidean")
+
+    rows = load_engineers(discipline, vertical, min_years, max_years, exclude_fully_booked)
 
     # if the filters left no engineers there is nothing to match
     if len(rows) == 0:
@@ -68,8 +83,8 @@ def recommend(project, method="euclidean", weights=None, top_n=10,
     # cannot ask for more neighbours than the number of engineers we have
     n = min(top_n, len(rows))
 
-    # the five levels are the last five columns of each row
-    attribute_matrix = np.array([row[-5:] for row in rows], dtype=float) * weight_vector
+    # the five levels are columns 5 to 9 of each row (before the availability columns)
+    attribute_matrix = np.array([row[5:10] for row in rows], dtype=float) * weight_vector
     project_point = np.array([project[a] for a in ATTRIBUTES], dtype=float) * weight_vector
 
     knn = NearestNeighbors(n_neighbors=n, metric=method)
@@ -98,6 +113,8 @@ def recommend(project, method="euclidean", weights=None, top_n=10,
             "communication": row[7],
             "timezone": row[8],
             "bandwidth": row[9],
+            "availability_status": row[10],
+            "available_in_weeks": row[11],
             "match_percent": round(float(scores[place]), 1),
         })
     return matches

@@ -19,11 +19,13 @@ CSV_PATH = "/app/data/engineers.csv"
 COLUMNS = [
     "name", "discipline", "region", "vertical", "years_experience",
     "seniority", "domain", "communication", "timezone", "bandwidth",
+    "availability_status", "available_in_weeks",
 ]
 
 # these columns are numbers, the rest are text
 NUMERIC_COLUMNS = {
     "years_experience", "seniority", "domain", "communication", "timezone", "bandwidth",
+    "available_in_weeks",
 }
 
 
@@ -57,7 +59,9 @@ def create_table(conn):
             domain INTEGER,
             communication INTEGER,
             timezone INTEGER,
-            bandwidth INTEGER
+            bandwidth INTEGER,
+            availability_status TEXT,
+            available_in_weeks INTEGER
         )
         """
     )
@@ -94,7 +98,8 @@ def load_engineers(conn):
         cur,
         "INSERT INTO engineers "
         "(name, discipline, region, vertical, years_experience, "
-        "seniority, domain, communication, timezone, bandwidth) VALUES %s",
+        "seniority, domain, communication, timezone, bandwidth, "
+        "availability_status, available_in_weeks) VALUES %s",
         rows,
     )
     conn.commit()

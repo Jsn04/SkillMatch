@@ -46,7 +46,8 @@ def get_engineers(limit: int = 20):
     cur = conn.cursor()
     cur.execute(
         "SELECT id, name, discipline, region, vertical, years_experience, "
-        "seniority, domain, communication, timezone, bandwidth "
+        "seniority, domain, communication, timezone, bandwidth, "
+        "availability_status, available_in_weeks "
         "FROM engineers LIMIT %s",
         (limit,),
     )
@@ -69,6 +70,8 @@ def get_engineers(limit: int = 20):
             "communication": row[8],
             "timezone": row[9],
             "bandwidth": row[10],
+            "availability_status": row[11],
+            "available_in_weeks": row[12],
         })
     return engineers
 
