@@ -11,14 +11,22 @@ const VERTICALS = [
   "Media", "Logistics", "EdTech", "Telecom", "Government", "Other",
 ];
 
+// experience is optional, so this starts on "Any" (no filter at all)
+const EXPERIENCE_RANGES = [
+  { value: "", label: "Any experience", min: null, max: null },
+  { value: "0-3", label: "0 - 3 years (entry)", min: 0, max: 3 },
+  { value: "3-7", label: "3 - 7 years (mid)", min: 3, max: 7 },
+  { value: "7-15", label: "7 - 15 years (senior)", min: 7, max: 15 },
+  { value: "15+", label: "15+ years (veteran)", min: 15, max: null },
+];
+
 function App() {
   const [attributes, setAttributes] = useState([]);
   const [values, setValues] = useState({});
   const [method, setMethod] = useState("euclidean");
   const [discipline, setDiscipline] = useState("");
   const [vertical, setVertical] = useState("");
-  const [minYears, setMinYears] = useState(0);
-  const [maxYears, setMaxYears] = useState(30);
+  const [experience, setExperience] = useState("");
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -41,11 +49,13 @@ function App() {
 
   async function handleSubmit() {
     setLoading(true);
+    // experience is optional, so only send a range if the user actually picked one
+    const range = EXPERIENCE_RANGES.find((r) => r.value === experience);
     const filters = {
       discipline: discipline,
       vertical: vertical,
-      min_years: minYears,
-      max_years: maxYears,
+      min_years: range.min,
+      max_years: range.max,
     };
     const matches = await getRecommendations(values, method, filters);
     setResults(matches);
@@ -61,11 +71,11 @@ function App() {
       </div>
 
       <div className="card">
-        {/* the team is the first thing to pick */}
+        {/* the tech stack is the first thing to pick */}
         <div className="attribute full">
-          <label>Discipline (team needed)</label>
+          <label>Tech Stack</label>
           <select value={discipline} onChange={(e) => setDiscipline(e.target.value)}>
-            <option value="">Any team</option>
+            <option value="">Any tech stack</option>
             {DISCIPLINES.map((d) => (
               <option key={d} value={d}>
                 {d}
@@ -90,12 +100,12 @@ function App() {
           ))}
         </div>
 
-        {/* filters */}
+        {/* filters, both optional */}
         <div className="filters">
           <div>
-            <label>Vertical</label>
+            <label>Industry</label>
             <select value={vertical} onChange={(e) => setVertical(e.target.value)}>
-              <option value="">Any</option>
+              <option value="">Any industry</option>
               {VERTICALS.map((v) => (
                 <option key={v} value={v}>
                   {v}
@@ -104,12 +114,14 @@ function App() {
             </select>
           </div>
           <div>
-            <label>Min years of experience</label>
-            <input type="number" value={minYears} onChange={(e) => setMinYears(Number(e.target.value))} />
-          </div>
-          <div>
-            <label>Max years of experience</label>
-            <input type="number" value={maxYears} onChange={(e) => setMaxYears(Number(e.target.value))} />
+            <label>Experience</label>
+            <select value={experience} onChange={(e) => setExperience(e.target.value)}>
+              {EXPERIENCE_RANGES.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -127,7 +139,11 @@ function App() {
       {loading && <p>Finding engineers...</p>}
 
       {searched && !loading && results.length === 0 && (
-        <p>No engineers found for these filters.</p>
+        <p>No engineers found for these filters. Try widening the tech stack, industry or experience filter.</p>
+      )}
+
+      {searched && !loading && results.length > 0 && results.length < 3 && (
+        <p className="hint">Only {results.length} engineer{results.length > 1 ? "s" : ""} match these filters. Widen a filter for more options.</p>
       )}
 
       {results.length > 0 && (

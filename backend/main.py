@@ -76,30 +76,30 @@ def get_engineers(limit: int = 20):
 # each level is picked from a few labelled options. the label is what the user sees,
 # the value is the number the matching uses behind the scenes.
 ATTRIBUTE_META = [
-    {"key": "seniority", "label": "Seniority", "options": [
+    {"key": "seniority", "label": "Experience Level", "options": [
         {"label": "Junior", "value": 15},
         {"label": "Mid-level", "value": 45},
         {"label": "Senior", "value": 70},
         {"label": "Principal / Architect", "value": 95},
     ]},
-    {"key": "domain", "label": "Domain familiarity", "options": [
+    {"key": "domain", "label": "Domain Expertise", "options": [
         {"label": "Generalist", "value": 15},
         {"label": "Some exposure", "value": 45},
         {"label": "Experienced", "value": 70},
         {"label": "Deep specialist", "value": 95},
     ]},
-    {"key": "communication", "label": "Client communication", "options": [
+    {"key": "communication", "label": "Communication", "options": [
         {"label": "Heads-down", "value": 15},
         {"label": "Occasional", "value": 45},
         {"label": "Client-facing", "value": 70},
         {"label": "Executive-facing", "value": 95},
     ]},
-    {"key": "timezone", "label": "Timezone overlap", "options": [
+    {"key": "timezone", "label": "Timezone", "options": [
         {"label": "Flexible", "value": 15},
         {"label": "Some overlap", "value": 50},
         {"label": "Full overlap", "value": 90},
     ]},
-    {"key": "bandwidth", "label": "Bandwidth", "options": [
+    {"key": "bandwidth", "label": "Availability", "options": [
         {"label": "Advisory (light)", "value": 15},
         {"label": "Part-time", "value": 45},
         {"label": "Most of the week", "value": 70},
