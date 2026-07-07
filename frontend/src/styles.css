@@ -192,3 +192,130 @@ button:hover {
   border-radius: 20px;
   white-space: nowrap;
 }
+
+/* login screen and the top bar */
+
+.login-card {
+  max-width: 380px;
+  margin: 10px auto 0;
+}
+
+/* the email and password boxes look like the dropdowns so the form stays consistent */
+.attribute input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.login-button {
+  margin-left: 0;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.login-error {
+  color: #c1272d;
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+.login-switch {
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+  margin: 16px 0 0;
+}
+
+/* the "Login / Create one" toggle text acts like a link */
+.login-switch span {
+  color: #4263eb;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.topbar-user {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.logout-button {
+  margin-left: 0;
+  padding: 6px 14px;
+  font-size: 13px;
+  background: #e9edf7;
+  color: #364fc7;
+}
+
+.logout-button:hover {
+  background: #dbe2f3;
+}
+
+/* assigning engineers to projects */
+
+.assign-button {
+  margin-left: 0;
+  padding: 6px 14px;
+  font-size: 13px;
+  background: #e6f9ee;
+  color: #1a7f4e;
+}
+
+.assign-button:hover {
+  background: #d3f2e0;
+}
+
+.assignments {
+  margin-top: 28px;
+}
+
+.assignments h2 {
+  font-size: 18px;
+}
+
+.assignment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border: 1px solid #eceef3;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+}
+
+.assignment-engineer {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.assignment-arrow {
+  color: #9aa2b1;
+}
+
+.assignment-project {
+  color: #4263eb;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.remove-button {
+  margin-left: 0;
+  padding: 6px 14px;
+  font-size: 13px;
+  background: #fde8e8;
+  color: #c1272d;
+}
+
+.remove-button:hover {
+  background: #f9d5d5;
+}

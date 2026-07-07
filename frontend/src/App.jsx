@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { getMeta, getRecommendations } from "./api";
+import {
+  getMeta,
+  getRecommendations,
+  assignEngineer,
+  getAssignments,
+  removeAssignment,
+} from "./api";
+import Login from "./Login";
 import "./styles.css";
 
 // the teams the user can ask for
@@ -23,6 +30,11 @@ function statusBadge(engineer) {
 }
 
 function App() {
+  // the login token decides what to show. if there is no token the manager sees the
+  // login screen, once they log in the token is saved and the matcher shows instead.
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [email, setEmail] = useState(localStorage.getItem("email") || "");
+
   const [attributes, setAttributes] = useState([]);
   const [values, setValues] = useState({});
   const [method, setMethod] = useState("euclidean");
@@ -31,6 +43,26 @@ function App() {
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // the project the manager is staffing, and the engineers already assigned to projects
+  const [projectName, setProjectName] = useState("");
+  const [assignments, setAssignments] = useState([]);
+
+  // called by the login screen when login works. save the token so it stays after a refresh.
+  function handleLogin(newToken, userEmail) {
+    localStorage.setItem("token", newToken);
+    localStorage.setItem("email", userEmail);
+    setToken(newToken);
+    setEmail(userEmail);
+  }
+
+  // logout just forgets the token, which sends the manager back to the login screen
+  function handleLogout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
+    setToken("");
+    setEmail("");
+  }
 
   // when the page loads, get the attributes and their options from the backend
   useEffect(() => {
@@ -43,6 +75,13 @@ function App() {
       setValues(start);
     });
   }, []);
+
+  // once the manager is logged in, load the assignments that already exist
+  useEffect(() => {
+    if (token) {
+      getAssignments().then((data) => setAssignments(data));
+    }
+  }, [token]);
 
   function handleChange(key, newValue) {
     setValues({ ...values, [key]: Number(newValue) });
@@ -61,14 +100,59 @@ function App() {
     setLoading(false);
   }
 
+  // put an engineer on the project the manager typed in, then refresh the list below
+  async function handleAssign(engineer) {
+    if (!projectName.trim()) {
+      alert("Type a project name first, then assign an engineer to it.");
+      return;
+    }
+    await assignEngineer(engineer.id, engineer.name, projectName.trim());
+    const data = await getAssignments();
+    setAssignments(data);
+  }
+
+  // take an engineer off a project, then refresh the list
+  async function handleRemoveAssignment(assignmentId) {
+    await removeAssignment(assignmentId);
+    const data = await getAssignments();
+    setAssignments(data);
+  }
+
+  // no token means the manager is not logged in yet, so show the login screen instead
+  if (!token) {
+    return <Login onLogin={handleLogin} />;
+  }
+
+  // engineers who are already assigned to a project should not still show up as a match,
+  // so I collect their ids and leave them out of the results below
+  const assignedIds = new Set(assignments.map((a) => a.engineer_id));
+  const visibleResults = results.filter((engineer) => !assignedIds.has(engineer.id));
+
   return (
     <div className="page">
+      {/* small bar showing who is logged in, with a logout button */}
+      <div className="topbar">
+        <span className="topbar-user">Signed in as {email}</span>
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
+      </div>
+
       <div className="header">
         <h1>SkillMatch</h1>
         <p className="subtitle">Describe the project and get the engineers who fit best.</p>
       </div>
 
       <div className="card">
+        {/* the name of the project being staffed. it is used when assigning an engineer */}
+        <div className="attribute full">
+          <label>Project name</label>
+          <input
+            type="text"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            placeholder="e.g. Payments revamp"
+          />
+        </div>
+
         {/* the tech stack is the first thing to pick */}
         <div className="attribute full">
           <label>Tech Stack</label>
@@ -134,17 +218,17 @@ function App() {
         <p>No engineers found for these filters. Try widening the tech stack or industry.</p>
       )}
 
-      {searched && !loading && results.length > 0 && results.length < 3 && (
-        <p className="hint">Only {results.length} engineer{results.length > 1 ? "s" : ""} match these filters. Widen a filter for more options.</p>
+      {searched && !loading && visibleResults.length > 0 && visibleResults.length < 3 && (
+        <p className="hint">Only {visibleResults.length} engineer{visibleResults.length > 1 ? "s" : ""} match these filters. Widen a filter for more options.</p>
       )}
 
-      {results.length > 0 && (
+      {visibleResults.length > 0 && (
         <div className="results">
           <h2>Best matches</h2>
-          {results.map((engineer, index) => {
+          {visibleResults.map((engineer, index) => {
             const status = statusBadge(engineer);
             return (
-              <div className="result-row" key={index}>
+              <div className="result-row" key={engineer.id}>
                 <div className="rank">{index + 1}</div>
                 <div className="result-main">
                   <div className="name">{engineer.name}</div>
@@ -154,9 +238,32 @@ function App() {
                   <span className={`status-badge ${status.cls}`}>{status.text}</span>
                 </div>
                 <div className="match-pill">{engineer.match_percent}%</div>
+                {/* assign this engineer to the project typed above */}
+                <button className="assign-button" onClick={() => handleAssign(engineer)}>
+                  Assign
+                </button>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* the engineers already put on projects, with a button to take them off again */}
+      {assignments.length > 0 && (
+        <div className="assignments">
+          <h2>Current assignments</h2>
+          {assignments.map((a) => (
+            <div className="assignment-row" key={a.id}>
+              <div className="assignment-main">
+                <span className="assignment-engineer">{a.engineer_name}</span>
+                <span className="assignment-arrow"> → </span>
+                <span className="assignment-project">{a.project_name}</span>
+              </div>
+              <button className="remove-button" onClick={() => handleRemoveAssignment(a.id)}>
+                Remove
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </div>

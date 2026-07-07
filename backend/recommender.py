@@ -29,10 +29,12 @@ def load_engineers(discipline=None, vertical=None, exclude_fully_booked=False):
     conn = get_connection()
     cur = conn.cursor()
 
+    # id is put at the end so the column positions the matching uses below do not change.
+    # the id is needed so an engineer can later be assigned to a project.
     query = (
         "SELECT name, discipline, region, vertical, years_experience, "
         "seniority, domain, communication, timezone, bandwidth, "
-        "availability_status, available_in_weeks FROM engineers"
+        "availability_status, available_in_weeks, id FROM engineers"
     )
 
     # only add the filters that were actually given
@@ -98,6 +100,7 @@ def recommend(project, method="euclidean", weights=None, top_n=10,
     for place, row_index in enumerate(indices[0]):
         row = rows[row_index]
         matches.append({
+            "id": row[12],
             "name": row[0],
             "discipline": row[1],
             "region": row[2],
