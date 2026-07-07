@@ -39,6 +39,13 @@ services:
     build: ./frontend
     ports:
       - "5173:5173"
+    # share my frontend code into the container so editing a file on my machine updates
+    # the running app straight away, without having to rebuild the image every time.
+    # the second line keeps the container's own node_modules instead of hiding it with
+    # the (empty) node_modules from my machine.
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
     networks:
