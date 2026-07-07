@@ -7,13 +7,20 @@ some info about the attributes (which the form uses), and the recommend endpoint
 returns the engineers who best match what a project needs.
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from seed_data import seed
 from database import get_connection
 from recommender import recommend
+from auth import create_users_table, seed_default_manager, register, login, current_user
+from assignments import (
+    create_assignments_table,
+    add_assignment,
+    get_assignments,
+    remove_assignment,
+)
 
 app = FastAPI()
 
@@ -31,6 +38,11 @@ app.add_middleware(
 def startup():
     # when the backend starts, make sure the engineer data is loaded into the database
     seed()
+    # also make the users table and add the default manager login
+    create_users_table()
+    seed_default_manager()
+    # and the table that stores which engineer is assigned to which project
+    create_assignments_table()
 
 
 @app.get("/health")
@@ -39,8 +51,28 @@ def health():
     return {"status": "ok"}
 
 
+# what the frontend sends when someone registers or logs in
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+@app.post("/register")
+def register_user(request: LoginRequest):
+    """Make a new manager account and log them straight in."""
+    token = register(request.email, request.password)
+    return {"token": token, "email": request.email.strip().lower()}
+
+
+@app.post("/login")
+def login_user(request: LoginRequest):
+    """Check the email and password and hand back a login token."""
+    token = login(request.email, request.password)
+    return {"token": token, "email": request.email.strip().lower()}
+
+
 @app.get("/engineers")
-def get_engineers(limit: int = 20):
+def get_engineers(limit: int = 20, user=Depends(current_user)):
     """Return some engineers from the database (20 by default)."""
     conn = get_connection()
     cur = conn.cursor()
@@ -132,7 +164,7 @@ class MatchRequest(BaseModel):
 
 
 @app.post("/recommend")
-def recommend_engineers(request: MatchRequest):
+def recommend_engineers(request: MatchRequest, user=Depends(current_user)):
     """Take the levels a project needs (and any filters) and return the best matching engineers."""
     project = {
         "seniority": request.seniority,
@@ -148,3 +180,34 @@ def recommend_engineers(request: MatchRequest):
         discipline=request.discipline,
         vertical=request.vertical,
     )
+
+
+# what the frontend sends when a manager assigns an engineer to a project
+class AssignRequest(BaseModel):
+    engineer_id: int
+    engineer_name: str
+    project_name: str
+
+
+@app.post("/assign")
+def assign_engineer(request: AssignRequest, user=Depends(current_user)):
+    """Put an engineer on a project. Saves who did it using the logged in manager's email."""
+    return add_assignment(
+        request.engineer_id,
+        request.engineer_name,
+        request.project_name,
+        user["email"],
+    )
+
+
+@app.get("/assignments")
+def list_assignments(user=Depends(current_user)):
+    """Return all the current assignments so the frontend can show them."""
+    return get_assignments()
+
+
+@app.delete("/assignments/{assignment_id}")
+def delete_assignment(assignment_id: int, user=Depends(current_user)):
+    """Take an engineer off a project by deleting that assignment."""
+    remove_assignment(assignment_id)
+    return {"status": "removed"}

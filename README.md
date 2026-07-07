@@ -16,6 +16,7 @@ A few things I like about it:
 - two match modes: an exact fit (fill the seat now) and a potential fit (someone who could stretch into the role)
 - you can filter the bench by vertical and years of experience
 - it ranks the whole bench, not just a handful
+- managers log in first, and once they find a good engineer they can assign them to a project and keep a record of it
 
 ## How it works
 
@@ -56,15 +57,42 @@ If you want to check the data is in the database:
 docker compose exec db psql -U skillmatch -d skillmatch -c "SELECT COUNT(*) FROM engineers;"
 ```
 
+## Logging in
+
+The app is meant for the project managers who staff the projects, so it asks you to log in
+first. There is a default manager account so it can be tried straight away:
+
+- email: manager@skillmatch.com
+- password: password123
+
+You can also make your own account from the login screen ("Create one"). When you log in the
+backend gives back a token, the frontend saves it, and it is sent with the searches so only a
+logged in manager can use the matcher. Logout forgets the token.
+
+The passwords are never stored as plain text. Each one is hashed with a salt (pbkdf2 from
+Python's hashlib) before it goes in the database.
+
 ## How to use it
 
-1. Pick the team you need (discipline), for example Backend or AI / ML.
-2. Pick the level the project needs for each of the five things (for example seniority: Junior,
+1. Log in (see above).
+2. Type the name of the project you are staffing.
+3. Pick the team you need (discipline), for example Backend or AI / ML.
+4. Pick the level the project needs for each of the five things (for example seniority: Junior,
    Mid-level, Senior, or Principal / Architect).
-3. Optionally filter by vertical and years of experience.
-4. Choose "Exact fit" or "Potential fit".
-5. Click "Find engineers".
-6. You get the best matching engineers, each with a match percentage (higher means a better fit).
+5. Optionally filter by vertical and years of experience.
+6. Choose "Exact fit" or "Potential fit".
+7. Click "Find engineers".
+8. You get the best matching engineers, each with a match percentage (higher means a better fit).
+
+## Assigning engineers to projects
+
+The matcher only shows who fits. The next step is actually putting someone on the project. Each
+match has an "Assign" button that puts that engineer on the project name you typed, and it is
+saved in the database with the manager who did it. Assigned engineers show up in a "Current
+assignments" list at the bottom, where each one has a "Remove" button to take them off again.
+
+Once an engineer is assigned they drop out of the best matches, since they are no longer free to
+suggest. Removing them puts them back.
 
 ## The data (why it is generated)
 
@@ -111,8 +139,10 @@ backend uses.
 SkillMatch/
   docker-compose.yml        starts the three containers on a custom network
   backend/
-    main.py                 the API (health, engineers, meta, recommend)
+    main.py                 the API (health, login, engineers, meta, recommend, assign)
     recommender.py          the matching logic (k-NN)
+    auth.py                 manager logins (users table, password hashing, login token)
+    assignments.py          saving which engineer is on which project
     database.py             connects to the database
     seed_data.py            loads engineers.csv into the database on startup
     Dockerfile
@@ -120,6 +150,7 @@ SkillMatch/
   frontend/
     src/
       App.jsx               the form and the results
+      Login.jsx             the login / register screen
       api.js                the calls to the backend
       styles.css
     index.html

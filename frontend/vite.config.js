@@ -8,5 +8,11 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 5173,
+    // when the code is mounted from my machine into the container, docker on mac does
+    // not pass on the normal "file changed" events, so vite would not notice edits.
+    // polling makes vite check the files itself, which is what turns hot reload back on.
+    watch: {
+      usePolling: true,
+    },
   },
 });
