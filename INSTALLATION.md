@@ -133,9 +133,8 @@ docker compose down -v
 - **On Windows**: Docker Desktop needs WSL2 turned on, Docker Desktop will prompt you to
   enable it if it is missing. Everything else in this guide works the same in a WSL2
   terminal or PowerShell.
-- **Changes to frontend code not showing up**: the frontend container is set up to reload
-  automatically when you edit a file in `frontend/src`, no rebuild needed. If you change
-  backend Python code, `requirements.txt`, or `package.json`, you do need to rebuild:
+- **Changes to code not showing up**: this project rebuilds the images fresh each time,
+  so if you edit any file in `backend/` or `frontend/`, run this to see the change:
 
 ```
 docker compose up --build
