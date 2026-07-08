@@ -260,7 +260,7 @@ function App() {
               <div className="hero">
                 <h1 className="hero-title">Right Engineers. Right Projects.</h1>
                 <p className="hero-subtitle">
-                  KNN-powered matching to build high-performing teams from a bench of 3,000.
+                  ML-powered matching to build high-performing teams from a bench of 3,000.
                 </p>
               </div>
 
