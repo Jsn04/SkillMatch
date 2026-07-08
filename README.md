@@ -1,8 +1,8 @@
 # SkillMatch
 
-SkillMatch is a web app that helps staff engineers onto projects. You set what the project needs
-- discipline, seniority, domain, communication, timezone overlap, and bandwidth - and it shows
-the engineers who fit best, each with a match percentage.
+SkillMatch is a web app that helps staff engineers onto projects. You set what the project needs,
+like tech stack, seniority, domain, communication, timezone overlap, and availability, and it
+shows the engineers who fit best, each with a match percentage.
 
 ## Why I made this
 
