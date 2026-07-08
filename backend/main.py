@@ -2,9 +2,10 @@
 SkillMatch backend.
 
 This is the API for the project. When it starts it loads the engineer data into the
-database, and it gives the frontend a few endpoints: a health check, a list of engineers,
-some info about the attributes (which the form uses), and the recommend endpoint that
-returns the engineers who best match what a project needs.
+database and sets up the manager logins. It then gives the frontend the endpoints it
+needs: registering and logging in, a health check, the attribute info the form is built
+from, the recommend endpoint that returns the engineers who best match what a project
+needs, and saving or removing which engineer is assigned to which project.
 """
 
 from fastapi import FastAPI, Depends

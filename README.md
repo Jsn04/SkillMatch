@@ -13,7 +13,7 @@ engineers who fit.
 
 A few things I like about it:
 - two match modes: an exact fit (fill the seat now) and a potential fit (someone who could stretch into the role)
-- you can filter the bench by vertical and years of experience
+- you can filter the bench by discipline and industry (vertical)
 - it ranks the whole bench, not just a handful
 - managers log in first, and once they find a good engineer they can assign them to a project and keep a record of it
 
@@ -29,8 +29,8 @@ reads from the database. The three containers are connected over a custom Docker
 
 For the matching I use k-nearest-neighbours from scikit-learn. Each engineer is a point made of
 their five levels (seniority, domain, communication, timezone, bandwidth). When you send the
-project's needs, the backend first filters the bench (by discipline, vertical and years of
-experience) and then finds the engineers nearest to what the project asked for. "Nearest" is
+project's needs, the backend first filters the bench (by discipline and vertical) and then finds
+the engineers nearest to what the project asked for. "Nearest" is
 measured in one of two ways:
 - Euclidean distance, which is the exact fit (their levels are close to what the project asked for)
 - Cosine, which is the potential fit (their balance of skills points the same way, even if the levels are lower)
@@ -81,7 +81,7 @@ Python's hashlib) before it goes in the database.
 3. Pick the team you need (discipline), for example Backend or AI / ML.
 4. Pick the level the project needs for each of the five things (for example seniority: Junior,
    Mid-level, Senior, or Principal / Architect).
-5. Optionally filter by vertical and years of experience.
+5. Optionally filter by industry (vertical).
 6. Choose "Exact fit" or "Potential fit".
 7. Click "Find engineers".
 8. You get the best matching engineers, each with a match percentage (higher means a better fit).
