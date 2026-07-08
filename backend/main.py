@@ -47,7 +47,6 @@ def startup():
 
 @app.get("/health")
 def health():
-    """Returns ok so I can check the backend is running."""
     return {"status": "ok"}
 
 

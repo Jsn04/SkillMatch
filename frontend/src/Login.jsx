@@ -37,11 +37,13 @@ function Login({ onLogin }) {
         <form onSubmit={handleSubmit}>
           <div className="attribute full">
             <label>Email</label>
+            {/* on the login screen I show the test account in the box as a hint,
+                since this is only a demo login. when registering it goes back to a normal hint. */}
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@company.com"
+              placeholder={isRegister ? "you@company.com" : "manager@skillmatch.com"}
               required
             />
           </div>
@@ -52,6 +54,7 @@ function Login({ onLogin }) {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder={isRegister ? "" : "password123"}
               required
             />
           </div>

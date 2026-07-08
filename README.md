@@ -65,7 +65,10 @@ first. There is a default manager account so it can be tried straight away:
 - email: manager@skillmatch.com
 - password: password123
 
-You can also make your own account from the login screen ("Create one"). When you log in the
+Because this is only a demo account, I show these same details as a hint inside the email and
+password boxes on the login screen, so anyone trying the app knows what to type. A real app
+would obviously not do this. You can also make your own account from the login screen
+("Create one"). When you log in the
 backend gives back a token, the frontend saves it, and it is sent with the searches so only a
 logged in manager can use the matcher. Logout forgets the token.
 

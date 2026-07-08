@@ -70,7 +70,6 @@ def create_table(conn):
 
 
 def table_is_empty(conn):
-    """Return True if there are no engineers in the table yet."""
     cur = conn.cursor()
     cur.execute("SELECT COUNT(*) FROM engineers")
     count = cur.fetchone()[0]
