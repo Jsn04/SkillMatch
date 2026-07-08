@@ -19,6 +19,9 @@ A few things I like about it:
 
 ## How it works
 
+(See PROJECT_DOCUMENTATION.md for the more detailed technical write up of the architecture,
+the data, and the matching logic.)
+
 There are three parts, each in its own Docker container:
 - frontend: a React page with the form and the results
 - backend: a Python (FastAPI) API that does the matching
@@ -36,6 +39,8 @@ measured in one of two ways:
 - Cosine, which is the potential fit (their balance of skills points the same way, even if the levels are lower)
 
 ## How to run it
+
+(See INSTALLATION.md for a more detailed, step by step version of this.)
 
 You need Docker installed. From the project folder run:
 
@@ -75,6 +80,8 @@ The passwords are never stored as plain text. Each one is hashed with a salt (pb
 Python's hashlib) before it goes in the database.
 
 ## How to use it
+
+(See USER_MANUAL.md for a full screen by screen walkthrough of the app.)
 
 1. Log in (see above).
 2. Type the name of the project you are assigning engineers to.
