@@ -44,6 +44,9 @@ From the project folder (where `docker-compose.yml` is), run:
 docker compose up
 ```
 
+If you are retrying after an earlier attempt failed, it's worth running `docker compose
+down` first, this clears out any leftover containers from that attempt so you start clean.
+
 The first time you run this it will also build the images, so it takes a bit longer (a
 minute or two depending on your internet speed, since it downloads Python, Node and
 Postgres base images). After that, starting is quick.
