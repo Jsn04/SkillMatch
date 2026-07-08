@@ -6,8 +6,7 @@ shows the engineers who fit best, each with a match percentage.
 
 ## Where to start
 
-This project has four documents, each covering a different part. If you are going through this
-submission, this is the order I'd suggest:
+This project has four documents:
 
 1. This README - the overview, the reasoning behind the project, and the tools used.
 2. INSTALLATION.md - step by step instructions to get the project running on your machine.
