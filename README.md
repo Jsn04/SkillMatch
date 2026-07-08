@@ -1,13 +1,13 @@
 # SkillMatch
 
-SkillMatch is a web app that helps staff engineers onto projects. You set what the project needs,
+SkillMatch is a web app that helps assign engineers onto projects. You set what the project needs,
 like tech stack, seniority, domain, communication, timezone overlap, and availability, and it
 shows the engineers who fit best, each with a match percentage.
 
 ## Why I made this
 
-Staffing engineers onto client projects is a real headache in software and consulting companies.
-A coordinator has to look at everyone on the bench and work out who fits a project's needs. I
+Assigning engineers onto client projects is a real headache in software and consulting companies.
+A project manager has to look at everyone on the bench and work out who fits a project's needs. I
 wanted to turn that into a quick search: describe the project, get back a ranked list of the
 engineers who fit.
 
@@ -58,7 +58,7 @@ docker compose exec db psql -U skillmatch -d skillmatch -c "SELECT COUNT(*) FROM
 
 ## Logging in
 
-The app is meant for the project managers who staff the projects, so it asks you to log in
+The app is meant for the project managers who assign the projects, so it asks you to log in
 first. There is a default manager account so it can be tried straight away:
 
 - email: manager@skillmatch.com
@@ -77,7 +77,7 @@ Python's hashlib) before it goes in the database.
 ## How to use it
 
 1. Log in (see above).
-2. Type the name of the project you are staffing.
+2. Type the name of the project you are assigning engineers to.
 3. Pick the team you need (discipline), for example Backend or AI / ML.
 4. Pick the level the project needs for each of the five things (for example seniority: Junior,
    Mid-level, Senior, or Principal / Architect).
