@@ -101,9 +101,11 @@ docker compose down -v
 - **"Port is already allocated" error**: something else on your machine is already using
   port 5173, 8000, or 5432. Stop whatever that is, or change the port numbers on the left
   side of the `ports:` lines in `docker-compose.yml` (for example `"5174:5173"`).
-- **Backend container exits right after starting**: this can happen if the database
-  container is slow to start on a slower machine. Just run `docker compose up` again,
-  the backend will wait for the database properly on the next try.
+- **Backend container exits right after starting**: this should not really happen, since
+  the backend is set to wait for the database's healthcheck before it even starts, and it
+  is also set to restart automatically if it ever does fail to connect. If you do see it
+  exit, just give it a few seconds, Docker will restart it on its own without you needing
+  to run anything again.
 - **Changes to frontend code not showing up**: the frontend container is set up to reload
   automatically when you edit a file in `frontend/src`, no rebuild needed. If you change
   backend Python code, `requirements.txt`, or `package.json`, you do need to rebuild:

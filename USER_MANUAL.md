@@ -71,8 +71,8 @@ Each result shows:
 - the engineer's name, tech stack, region, industry, and years of experience
 - their current availability, shown as a small coloured badge:
   - green "Available now"
-  - yellow "Partially free, full in Xw" (X = weeks until fully booked)
-  - red "Fully booked, free in Xw" - note this one only appears under "Potential fit".
+  - yellow "Partially free · full in Xw" (X = weeks until fully booked)
+  - red "Fully booked · free in Xw" - note this one only appears under "Potential fit".
     Under "Exact fit" a fully booked engineer is never shown at all (see above), and
     even under "Potential fit" only a small share of the bench is fully booked at any
     time, so you may need to try a few searches before one shows up in your results.
