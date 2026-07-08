@@ -98,14 +98,41 @@ docker compose down -v
 
 ## Troubleshooting
 
+- **"Cannot connect to the Docker daemon"**: Docker Desktop is not actually running yet,
+  just installed. Open the Docker Desktop app and wait for it to say it's running, then
+  try again.
+- **First run feels slow / stuck on a fresh machine**: this is normal. On the very first
+  run, Docker has to download the Postgres, Python and Node base images and then build
+  the project's own images, which can take a few minutes depending on your internet
+  speed, not just "a minute or two" if your connection is slower. Let it finish, every
+  run after this one is fast since everything is cached.
+- **Build fails partway with a "no space left on device" type error**: the image pull
+  and build needs a few GB free. Free up some disk space and run `docker compose up`
+  again, it picks up where it left off.
 - **"Port is already allocated" error**: something else on your machine is already using
   port 5173, 8000, or 5432. Stop whatever that is, or change the port numbers on the left
   side of the `ports:` lines in `docker-compose.yml` (for example `"5174:5173"`).
+- **"docker: 'compose' is not a docker command"**: your Docker install is older and uses
+  the standalone `docker-compose` (with a hyphen) instead of the newer `docker compose`
+  (a space). Just use `docker-compose up` instead everywhere in this guide.
 - **Backend container exits right after starting**: this should not really happen, since
   the backend is set to wait for the database's healthcheck before it even starts, and it
   is also set to restart automatically if it ever does fail to connect. If you do see it
   exit, just give it a few seconds, Docker will restart it on its own without you needing
   to run anything again.
+- **App opens but looks blank or can't reach the backend**: this usually just means the
+  page loaded before the backend was fully ready, or your browser cached an older
+  version. Wait for the `Local: http://localhost:5173/` log line, then hard refresh the
+  page (Ctrl+Shift+R, or Cmd+Shift+R on Mac).
+- **The `psql` count command returns 0 or an error about a missing table**: the backend
+  is probably still busy loading the 3000 engineers. Wait a few seconds and run the
+  command again.
+- **Login fails even with the hint text filled in**: double check there is no extra
+  space typed into the box. If it still fails, the database may be left over from an
+  earlier partial run, run `docker compose down -v` and start again for a clean database.
+- **On Windows**: Docker Desktop needs WSL2 turned on, Docker Desktop will prompt you to
+  enable it if it is missing. Everything else in this guide works the same in a WSL2
+  terminal or PowerShell.
 - **Changes to frontend code not showing up**: the frontend container is set up to reload
   automatically when you edit a file in `frontend/src`, no rebuild needed. If you change
   backend Python code, `requirements.txt`, or `package.json`, you do need to rebuild:
