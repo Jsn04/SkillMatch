@@ -87,3 +87,11 @@ export async function removeAssignment(assignmentId) {
   });
   return res.json();
 }
+
+// fetches engineers from the database for the engineers table page
+export async function getEngineers(limit = 50) {
+  const res = await fetch(`${API_URL}/engineers?limit=${limit}`, {
+    headers: { ...authHeader() },
+  });
+  return res.json();
+}
