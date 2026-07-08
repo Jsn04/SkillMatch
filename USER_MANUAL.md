@@ -72,7 +72,10 @@ Each result shows:
 - their current availability, shown as a small coloured badge:
   - green "Available now"
   - yellow "Partially free, full in Xw" (X = weeks until fully booked)
-  - red "Fully booked, free in Xw"
+  - red "Fully booked, free in Xw" - note this one only appears under "Potential fit".
+    Under "Exact fit" a fully booked engineer is never shown at all (see above), and
+    even under "Potential fit" only a small share of the bench is fully booked at any
+    time, so you may need to try a few searches before one shows up in your results.
 - a match percentage on the right (higher = closer to what you asked for)
 - an "Assign" button
 
