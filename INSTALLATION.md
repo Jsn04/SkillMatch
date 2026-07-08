@@ -98,71 +98,71 @@ docker compose down -v
 
 ## Troubleshooting
 
-- **"Cannot connect to the Docker daemon"**: Docker Desktop is not actually running yet,
-  just installed. Open the Docker Desktop app and wait for it to say it's running, then
-  try again.
-- **First run feels slow / stuck on a fresh machine**: this is normal. On the very first
-  run, Docker has to download the Postgres, Python and Node base images and then build
-  the project's own images, which can take a few minutes depending on your internet
-  speed, not just "a minute or two" if your connection is slower. Let it finish, every
-  run after this one is fast since everything is cached.
-- **Build fails partway with a "no space left on device" type error**: the image pull
-  and build needs a few GB free. Free up some disk space and run `docker compose up`
-  again, it picks up where it left off.
-- **"Port is already allocated" error**: something else on your machine is already using
-  port 5173, 8000, or 5432. It's usually another Docker project. First check what's
-  running:
+- **"Cannot connect to the Docker daemon"**: Docker Desktop isn't running yet. Open the
+  Docker Desktop app, wait for it to say "Running", then try again.
+
+- **First run feels slow**: normal, it's downloading and building everything for the
+  first time. Just let it finish, every run after this is fast.
+
+- **"no space left on device"**: free up a few GB, or clear old Docker images first:
+
+```
+docker system prune -a
+```
+
+- **"Port is already allocated"**: something else is using the port, usually another
+  Docker project. Check what's running:
 
 ```
 docker ps
 ```
 
-  If you see another project's containers in the list, stop that project (run
-  `docker compose down` from that project's own folder), then run `docker compose up`
-  here again.
-
-  If it's not Docker, something else on your machine is using the port. Find out what,
-  then close it or stop it:
+  Stop it from its own project folder (`docker compose down`), then run
+  `docker compose up` here again. If it's not Docker, find the program using the port:
 
 ```
-# Mac / Linux, replace 5173 with the port from the error
+# Mac / Linux
 lsof -i :5173
 
-# Windows (Command Prompt), replace 5173 with the port from the error
+# Windows
 netstat -ano | findstr :5173
 ```
 
-  On Mac/Linux this prints the program's PID, which you can stop with `kill -9 <PID>`.
-  On Windows the last number in the row is the PID, which you can stop with
-  `taskkill /PID <PID> /F`.
+  Then stop it: `kill -9 <PID>` (Mac/Linux) or `taskkill /PID <PID> /F` (Windows).
 
-  If you would rather not close the other program, you can instead change the port
-  SkillMatch uses. Open `docker-compose.yml` and change the left side of the matching
-  `ports:` line, for example `"5174:5173"` instead of `"5173:5173"`, then open the app
-  at that new port instead (`http://localhost:5174` in this example).
-- **"docker: 'compose' is not a docker command"**: your Docker install is older and uses
-  the standalone `docker-compose` (with a hyphen) instead of the newer `docker compose`
-  (a space). Just use `docker-compose up` instead everywhere in this guide.
-- **Backend container exits right after starting**: this should not really happen, since
-  the backend is set to wait for the database's healthcheck before it even starts, and it
-  is also set to restart automatically if it ever does fail to connect. If you do see it
-  exit, just give it a few seconds, Docker will restart it on its own without you needing
-  to run anything again.
-- **App opens but looks blank or can't reach the backend**: this usually just means the
-  page loaded before the backend was fully ready, or your browser cached an older
-  version. Wait for the `Local: http://localhost:5173/` log line, then hard refresh the
-  page (Ctrl+Shift+R, or Cmd+Shift+R on Mac).
-- **The `psql` count command returns 0 or an error about a missing table**: the backend
-  is probably still busy loading the 3000 engineers. Wait a few seconds and run the
-  command again.
-- **Login fails even with the hint text filled in**: double check there is no extra
-  space typed into the box. If it still fails, the database may be left over from an
-  earlier partial run, run `docker compose down -v` and start again for a clean database.
-- **On Windows**: Docker Desktop needs WSL2 turned on, Docker Desktop will prompt you to
-  enable it if it is missing. Everything else in this guide works the same in a WSL2
-  terminal or PowerShell.
-- **Changes to code not showing up**: this project rebuilds the images fresh each time,
-  so if you edit any file in `backend/` or `frontend/`, run this to see the change:
+- **"docker: 'compose' is not a docker command"**: your Docker is older, use the hyphen
+  version instead:
+
+```
+docker-compose up
+```
+
+- **Backend container exits right after starting**: it's set to restart itself
+  automatically. If it doesn't come back, just run:
+
+```
+docker compose up
+```
+
+- **App looks blank or can't reach the backend**: the page loaded before the backend
+  was ready. Wait for the `Local: http://localhost:5173/` log line, then hard refresh
+  (Ctrl+Shift+R, or Cmd+Shift+R on Mac).
+
+- **`psql` count returns 0 or a missing table error**: the data is still loading, wait a
+  few seconds and run the same command again.
+
+- **Login fails despite the hint text**: check for extra spaces in the boxes, or reset
+  the database:
+
+```
+docker compose down -v
+docker compose up
+```
+
+- **On Windows**: Docker Desktop needs WSL2, it will prompt you to enable it if missing.
+
+- **Changes to code not showing up**: rebuild after editing anything in `backend/` or
+  `frontend/`:
 
 ```
 docker compose up --build
