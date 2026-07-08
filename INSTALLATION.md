@@ -41,11 +41,12 @@ Then open `.env` and change the values. If you skip this step entirely, the defa
 From the project folder (where `docker-compose.yml` is), run:
 
 ```
+docker compose down
 docker compose up
 ```
 
-If you are retrying after an earlier attempt failed, it's worth running `docker compose
-down` first, this clears out any leftover containers from that attempt so you start clean.
+Running `docker compose down` first clears out any leftover containers from an earlier
+attempt, so it's worth always running it before `up`, not just when something failed.
 
 The first time you run this it will also build the images, so it takes a bit longer (a
 minute or two depending on your internet speed, since it downloads Python, Node and
