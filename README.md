@@ -4,6 +4,17 @@ SkillMatch is a web app that helps assign engineers onto projects. You set what 
 like tech stack, seniority, domain, communication, timezone overlap, and availability, and it
 shows the engineers who fit best, each with a match percentage.
 
+## Where to start
+
+This project has four documents, each covering a different part. If you are going through this
+submission, this is the order I'd suggest:
+
+1. This README - the overview, the reasoning behind the project, and the tools used.
+2. INSTALLATION.md - step by step instructions to get the project running on your machine.
+3. USER_MANUAL.md - a screen by screen walkthrough of how to use the app once it is running.
+4. PROJECT_DOCUMENTATION.md - the technical write up of the architecture, the data, and the
+   matching logic, for anyone who wants to go deeper into how it was built.
+
 ## Why I made this
 
 Assigning engineers onto client projects is a real headache in software and consulting companies.
