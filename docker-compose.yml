@@ -14,6 +14,13 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-skillmatch}
     ports:
       - "5432:5432"
+    # check the database is actually ready to accept connections, not just started.
+    # the backend waits for this so it does not try to connect too early.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-skillmatch}"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
     networks:
       - skillmatch-net
 
@@ -21,6 +28,8 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
+    # if the backend ever starts before the database is reachable, let docker restart it
+    restart: on-failure
     # the backend needs the same database settings so it can connect to the db container
     environment:
       DB_HOST: db
@@ -30,8 +39,10 @@ services:
     # share the data folder into the container so the backend can read engineers.csv
     volumes:
       - ./data:/app/data
+    # wait until the database is healthy (not just started) before starting the backend
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - skillmatch-net
 
