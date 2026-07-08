@@ -110,8 +110,36 @@ docker compose down -v
   and build needs a few GB free. Free up some disk space and run `docker compose up`
   again, it picks up where it left off.
 - **"Port is already allocated" error**: something else on your machine is already using
-  port 5173, 8000, or 5432. Stop whatever that is, or change the port numbers on the left
-  side of the `ports:` lines in `docker-compose.yml` (for example `"5174:5173"`).
+  port 5173, 8000, or 5432. It's usually another Docker project. First check what's
+  running:
+
+```
+docker ps
+```
+
+  If you see another project's containers in the list, stop that project (run
+  `docker compose down` from that project's own folder), then run `docker compose up`
+  here again.
+
+  If it's not Docker, something else on your machine is using the port. Find out what,
+  then close it or stop it:
+
+```
+# Mac / Linux, replace 5173 with the port from the error
+lsof -i :5173
+
+# Windows (Command Prompt), replace 5173 with the port from the error
+netstat -ano | findstr :5173
+```
+
+  On Mac/Linux this prints the program's PID, which you can stop with `kill -9 <PID>`.
+  On Windows the last number in the row is the PID, which you can stop with
+  `taskkill /PID <PID> /F`.
+
+  If you would rather not close the other program, you can instead change the port
+  SkillMatch uses. Open `docker-compose.yml` and change the left side of the matching
+  `ports:` line, for example `"5174:5173"` instead of `"5173:5173"`, then open the app
+  at that new port instead (`http://localhost:5174` in this example).
 - **"docker: 'compose' is not a docker command"**: your Docker install is older and uses
   the standalone `docker-compose` (with a hyphen) instead of the newer `docker compose`
   (a space). Just use `docker-compose up` instead everywhere in this guide.
