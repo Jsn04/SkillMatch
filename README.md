@@ -94,31 +94,20 @@ Python's hashlib) before it goes in the database.
 (See USER_MANUAL.md for a full screen by screen walkthrough of the app.)
 
 1. Log in (see above).
-2. Type the name of the project you are assigning engineers to.
-3. Pick the team you need (discipline), for example Backend or AI / ML.
-4. Pick the level the project needs for each of the five things (for example seniority: Junior,
-   Mid-level, Senior, or Principal / Architect).
-5. Optionally filter by industry (vertical).
-6. Choose "Exact fit" or "Potential fit".
-7. Click "Find engineers".
-8. You get the best matching engineers, each with a match percentage (higher means a better fit).
-
-## How to use it (in pictures)
-
-1. Log in with the manager account.
    ![Login screen](docs/screenshots/login.png)
-
 2. You land on the Dashboard, ready to describe a project.
    ![Dashboard landing page](docs/screenshots/landing.png)
-
-3. Fill in the project name, pick the levels it needs, and click "Find Best Matches".
-   ![Setting project requirements and parameters](docs/screenshots/landing2.png)
-
-4. Browse the full bench anytime from the Engineers page.
-   ![Engineer database table](docs/screenshots/engineers.png)
-
-5. Assigned engineers and who assigned them show up under Projects.
-   ![Project assignments list](docs/screenshots/assigned.png)
+3. Type the name of the project you are assigning engineers to.
+4. Pick the team you need (discipline), for example Backend or AI / ML.
+5. Pick the level the project needs for each of the five things (for example seniority: Junior,
+   Mid-level, Senior, or Principal / Architect).
+6. Optionally filter by industry (vertical).
+7. Choose "Exact fit" or "Potential fit".
+8. Click "Find engineers".
+9. You get the best matching engineers, each with a match percentage (higher means a better fit).
+   ![Setting project requirements and viewing top matches](docs/screenshots/landing2.png)
+10. Browse the full bench anytime from the Engineers page.
+    ![Engineer database table](docs/screenshots/engineers.png)
 
 ## Assigning engineers to projects
 
@@ -129,6 +118,8 @@ assignments" list at the bottom, where each one has a "Remove" button to take th
 
 Once an engineer is assigned they drop out of the best matches, since they are no longer free to
 suggest. Removing them puts them back.
+
+![Project assignments list](docs/screenshots/assigned.png)
 
 ## The data (why it is generated)
 
