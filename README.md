@@ -103,7 +103,7 @@ Python's hashlib) before it goes in the database.
    Mid-level, Senior, or Principal / Architect).
 6. Optionally filter by industry (vertical).
 7. Choose "Exact fit" or "Potential fit".
-8. Click "Find engineers".
+8. Click "Find Best Matches".
 9. You get the best matching engineers, each with a match percentage (higher means a better fit).
    ![Setting project requirements and viewing top matches](docs/screenshots/landing2.png)
 10. Browse the full bench anytime from the Engineers page.
