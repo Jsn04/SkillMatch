@@ -103,6 +103,23 @@ Python's hashlib) before it goes in the database.
 7. Click "Find engineers".
 8. You get the best matching engineers, each with a match percentage (higher means a better fit).
 
+## How to use it (in pictures)
+
+1. Log in with the manager account.
+   ![Login screen](docs/screenshots/login.png)
+
+2. You land on the Dashboard, ready to describe a project.
+   ![Dashboard landing page](docs/screenshots/landing.png)
+
+3. Fill in the project name, pick the levels it needs, and click "Find Best Matches".
+   ![Setting project requirements and parameters](docs/screenshots/landing2.png)
+
+4. Browse the full bench anytime from the Engineers page.
+   ![Engineer database table](docs/screenshots/engineers.png)
+
+5. Assigned engineers and who assigned them show up under Projects.
+   ![Project assignments list](docs/screenshots/assigned.png)
+
 ## Assigning engineers to projects
 
 The matcher only shows who fits. The next step is actually putting someone on the project. Each
