@@ -82,7 +82,7 @@ first. There is a default manager account so it can be tried straight away:
 Because this is only a demo account, I show these same details as a hint inside the email and
 password boxes on the login screen, so anyone trying the app knows what to type. A real app
 would obviously not do this. You can also make your own account from the login screen
-("Create one"). When you log in the
+("Sign up"). When you log in the
 backend gives back a token, the frontend saves it, and it is sent with the searches so only a
 logged in manager can use the matcher. Logout forgets the token.
 
@@ -113,8 +113,8 @@ Python's hashlib) before it goes in the database.
 
 The matcher only shows who fits. The next step is actually putting someone on the project. Each
 match has an "Assign" button that puts that engineer on the project name you typed, and it is
-saved in the database with the manager who did it. Assigned engineers show up in a "Current
-assignments" list at the bottom, where each one has a "Remove" button to take them off again.
+saved in the database with the manager who did it. Assigned engineers show up on the "Projects"
+page (in the sidebar), where each one has a "Remove" button to take them off again.
 
 Once an engineer is assigned they drop out of the best matches, since they are no longer free to
 suggest. Removing them puts them back.

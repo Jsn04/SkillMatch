@@ -43,8 +43,6 @@ From the project folder (where `docker-compose.yml` is), run:
 ```
 docker compose down
 docker compose up --build
-docker compose up
-
 ```
 
 Running `docker compose down` first clears out any leftover containers from an earlier

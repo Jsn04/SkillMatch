@@ -22,9 +22,9 @@ You have two options here:
 - password: `password123`
 
 These are already shown inside the email and password boxes as a hint, so you can just
-click "Login" without typing anything.
+click "Sign In" without typing anything.
 
-**Create your own account**: click "Create one" underneath the login form, fill in any
+**Create your own account**: click "Sign up" underneath the login form, fill in any
 email and password, and you will be logged straight in.
 
 You stay logged in even if you refresh the page. Click "Logout" in the top bar whenever
@@ -63,7 +63,7 @@ want to narrow it down.
   includes engineers who are currently busy on something else, since you are scouting
   ahead rather than staffing today.
 
-Click **Find engineers** to run the search.
+Click **Find Best Matches** to run the search.
 
 ## 3. Reading the results
 
@@ -71,8 +71,8 @@ Each result shows:
 - the engineer's name, tech stack, region, industry, and years of experience
 - their current availability, shown as a small coloured badge:
   - green "Available now"
-  - yellow "Partially free · full in Xw" (X = weeks until fully booked)
-  - red "Fully booked · free in Xw" - note this one only appears under "Potential fit".
+  - yellow "Partial · Xw" (X = weeks until fully booked)
+  - red "Booked · Xw" - note this one only appears under "Potential fit".
     Under "Exact fit" a fully booked engineer is never shown at all (see above), and
     even under "Potential fit" only a small share of the bench is fully booked at any
     time, so you may need to try a few searches before one shows up in your results.
@@ -88,14 +88,14 @@ Once you have found someone good:
 1. Make sure you typed a project name at the top of the form (if you did not, the app
    will remind you to).
 2. Click **Assign** on their result row.
-3. They now appear under **Current assignments** at the bottom of the page, showing
-   their name and the project they were put on.
+3. They now appear on the **Projects** page (in the sidebar), showing their name, the
+   project they were put on, and which manager assigned them.
 4. They also disappear from the "Best matches" list above, since they are no longer a
    free option to suggest for other searches.
 
 ## 5. Removing an assignment
 
-Under **Current assignments**, click **Remove** next to any entry to take that engineer
+On the **Projects** page, click **Remove** next to any entry to take that engineer
 off the project. They will show up again in future searches once removed.
 
 ## 6. Logging out

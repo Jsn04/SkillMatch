@@ -527,7 +527,7 @@ function App() {
                           <td>
                             <span className="project-badge">{a.project_name}</span>
                           </td>
-                          <td className="cell-secondary">{a.manager_email || "—"}</td>
+                          <td className="cell-secondary">{a.assigned_by || "—"}</td>
                           <td>
                             <button className="btn-remove" onClick={() => handleRemoveAssignment(a.id)}>
                               Remove
