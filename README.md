@@ -73,10 +73,9 @@ docker compose exec db psql -U skillmatch -d skillmatch -c "SELECT COUNT(*) FROM
 
 ### Where I tested it
 
-I tested the project from a fresh clone on macOS, on a clean Docker install (removed the old
-containers, images and volumes first), so it runs plug and play with just `docker compose up`. I
-was not able to test it on a second physical machine or on Windows, so I am noting that here as
-asked.
+I tested the project from a fresh clone on both macOS and Windows, on a clean Docker install
+(removed the old containers, images and volumes first), so it runs plug and play with just
+`docker compose up` on both.
 
 ## Logging in
 
