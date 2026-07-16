@@ -111,7 +111,15 @@ function App() {
   // once the manager is logged in, load the assignments that already exist
   useEffect(() => {
     if (token) {
-      getAssignments().then((data) => setAssignments(data));
+      getAssignments().then((data) => {
+        // if the token is old or expired the backend sends back an error instead of a
+        // list, so just log the manager out and send them back to the login screen
+        if (Array.isArray(data)) {
+          setAssignments(data);
+        } else {
+          handleLogout();
+        }
+      });
     }
   }, [token]);
 
